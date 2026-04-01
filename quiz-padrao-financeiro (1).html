@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Descubra seu Padrão Financeiro</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #F7F4EF;
+    --dark: #1A1A18;
+    --mid: #4A4A42;
+    --muted: #9A9A8E;
+    --border: #E2DDD4;
+    --white: #FFFFFF;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .page { max-width: 600px; margin: 0 auto; padding: 2rem 1.25rem 4rem; display: none; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero-wrap { text-align: center; padding-top: 3rem; }
+  .coin-icon {
+    width: 64px; height: 64px;
+    background: var(--dark);
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem; font-size: 28px;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 16px; margin-bottom: 1.25rem;
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 500; line-height: 1.15;
+    color: var(--dark); margin-bottom: 1rem;
+  }
+  .hero-desc {
+    font-size: 16px; color: var(--mid);
+    max-width: 460px; margin: 0 auto 2rem; line-height: 1.75;
+  }
+  .steps-row { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 2.5rem; flex-wrap: wrap; }
+  .step-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  .step-dot { width: 6px; height: 6px; background: var(--dark); border-radius: 50%; }
+  .btn-primary {
+    display: inline-block;
+    background: var(--dark); color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    padding: 14px 40px; border-radius: 999px;
+    border: none; cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* PROGRESS */
+  .prog-wrap { margin-bottom: 2rem; }
+  .prog-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .prog-bar { height: 2px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--dark); border-radius: 99px; transition: width 0.45s cubic-bezier(.4,0,.2,1); }
+
+  /* QUESTION */
+  .q-num { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .q-text {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(18px, 4vw, 22px); font-weight: 500;
+    line-height: 1.4; color: var(--dark); margin-bottom: 1.75rem;
+  }
+  .option {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 18px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 14px; margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .option:hover { border-color: #C0BDB4; transform: translateY(-1px); }
+  .option.selected { border-color: var(--dark); background: var(--cream); }
+  .opt-letter {
+    width: 28px; height: 28px; min-width: 28px;
+    border-radius: 50%; border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    transition: all 0.15s; margin-top: 1px;
+  }
+  .option.selected .opt-letter { background: var(--dark); color: var(--white); border-color: var(--dark); }
+  .opt-text { font-size: 15px; color: var(--dark); line-height: 1.5; padding-top: 4px; }
+  .btn-next {
+    display: block; width: 100%; margin-top: 1.75rem; padding: 15px;
+    background: var(--dark); color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    border: none; border-radius: 999px; cursor: pointer;
+    opacity: 0.3; pointer-events: none;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-next.active { opacity: 1; pointer-events: all; }
+  .btn-next.active:hover { opacity: 0.85; }
+
+  /* LEAD */
+  .lead-wrap { padding-top: 1rem; }
+  .lead-icon { font-size: 32px; margin-bottom: 1rem; text-align: center; }
+  .lead-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 500; text-align: center; margin-bottom: 0.75rem; }
+  .lead-sub { font-size: 15px; color: var(--mid); text-align: center; margin-bottom: 2rem; line-height: 1.7; }
+  .input-group { margin-bottom: 1rem; }
+  .input-group label { display: block; font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .input-group input {
+    width: 100%; padding: 13px 16px;
+    background: var(--white); border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--dark);
+    outline: none; transition: border-color 0.15s;
+  }
+  .input-group input:focus { border-color: var(--dark); }
+  .input-group input::placeholder { color: var(--muted); }
+  .btn-lead {
+    display: block; width: 100%; margin-top: 1.5rem; padding: 15px;
+    background: var(--dark); color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    border: none; border-radius: 999px; cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-lead:hover { opacity: 0.85; }
+  .btn-lead:disabled { opacity: 0.4; cursor: default; }
+  .sending-msg { text-align: center; font-size: 14px; color: var(--muted); margin-top: 0.75rem; display: none; }
+  .privacy-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 1rem; }
+
+  /* RESULT */
+  .result-header { border-radius: 18px; padding: 1.75rem; margin-bottom: 1.25rem; }
+  .result-badge-pill { display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 1rem; }
+  .result-name { font-family: 'Fraunces', serif; font-size: clamp(22px, 5vw, 30px); font-weight: 500; line-height: 1.25; margin-bottom: 0.75rem; }
+  .result-desc-text { font-size: 15px; line-height: 1.75; opacity: 0.85; }
+  .section-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+  .list-item { display: flex; gap: 12px; padding: 10px 14px; background: var(--cream); border-radius: 10px; margin-bottom: 8px; font-size: 14px; color: var(--dark); line-height: 1.5; align-items: flex-start; }
+  .list-dot { width: 7px; height: 7px; min-width: 7px; border-radius: 50%; margin-top: 6px; }
+  .cta-box { background: var(--dark); border-radius: 18px; padding: 1.75rem; text-align: center; margin-top: 1.25rem; }
+  .cta-box h3 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; color: var(--white); margin-bottom: 0.5rem; }
+  .cta-box p { font-size: 14px; color: rgba(255,255,255,0.65); margin-bottom: 1.5rem; line-height: 1.65; }
+  .btn-pdf { display: inline-block; background: var(--white); color: var(--dark); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; padding: 13px 32px; border-radius: 999px; border: none; cursor: pointer; transition: opacity 0.15s; margin-bottom: 10px; }
+  .btn-pdf:hover { opacity: 0.88; }
+  .btn-restart { display: block; background: transparent; color: rgba(255,255,255,0.5); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 8px; border: none; cursor: pointer; margin: 0 auto; transition: color 0.15s; }
+  .btn-restart:hover { color: rgba(255,255,255,0.85); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="page active" id="page-hero">
+  <div class="hero-wrap">
+    <div class="coin-icon">💸</div>
+    <div class="tag">Diagnóstico financeiro</div>
+    <h1>Descubra seu padrão financeiro</h1>
+    <p class="hero-desc">Você trabalha o mês inteiro, mas no final não sabe para onde foi o dinheiro? Criei um diagnóstico rápido que identifica exatamente qual é o seu padrão financeiro. Leva 2 minutos. Vamos?</p>
+    <div class="steps-row">
+      <div class="step-item"><div class="step-dot"></div> 5 perguntas</div>
+      <div class="step-item"><div class="step-dot"></div> 2 minutos</div>
+      <div class="step-item"><div class="step-dot"></div> Resultado + PDF grátis</div>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">Começar diagnóstico</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="page" id="page-quiz">
+  <div class="prog-wrap">
+    <div class="prog-meta">
+      <span id="prog-label">Pergunta 1 de 5</span>
+      <span id="prog-pct">20%</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:20%"></div></div>
+  </div>
+  <div class="q-num" id="q-num">01 / 05</div>
+  <div class="q-text" id="q-text"></div>
+  <div id="q-options"></div>
+  <button class="btn-next" id="btn-next" onclick="nextQuestion()">Próxima pergunta</button>
+</div>
+
+<!-- LEAD CAPTURE -->
+<div class="page" id="page-lead">
+  <div class="lead-wrap">
+    <div class="lead-icon">🎯</div>
+    <div class="lead-title">Quase lá!</div>
+    <p class="lead-sub">Seu diagnóstico está pronto. Informe seus dados para revelar seu perfil financeiro e receber o PDF gratuito.</p>
+    <div class="input-group">
+      <label>Seu nome</label>
+      <input type="text" id="lead-name" placeholder="Como posso te chamar?" />
+    </div>
+    <div class="input-group">
+      <label>Seu melhor e-mail</label>
+      <input type="email" id="lead-email" placeholder="seu@email.com" />
+    </div>
+    <button class="btn-lead" id="btn-lead" onclick="submitLead()">Ver meu resultado →</button>
+    <div class="sending-msg" id="sending-msg">Salvando seus dados...</div>
+    <p class="privacy-note">🔒 Seus dados estão seguros. Sem spam, prometido.</p>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="page" id="page-result">
+  <div class="result-header" id="result-header">
+    <div class="result-badge-pill" id="result-badge"></div>
+    <div class="result-name" id="result-name"></div>
+    <div class="result-desc-text" id="result-desc"></div>
+  </div>
+  <div class="section-card">
+    <div class="section-label">O que precisa melhorar</div>
+    <div id="result-improvements"></div>
+  </div>
+  <div class="section-card">
+    <div class="section-label">Seus próximos passos</div>
+    <div id="result-steps"></div>
+  </div>
+  <div class="cta-box">
+    <h3>Quer seu diagnóstico em PDF?</h3>
+    <p>Receba seu perfil financeiro completo com plano de ação personalizado para transformar sua relação com o dinheiro.</p>
+    <button class="btn-pdf" onclick="generatePDF()">⬇ Baixar PDF gratuito</button>
+    <button class="btn-restart" onclick="restartQuiz()">Refazer o quiz</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════
+// CONFIGURAÇÃO — cole aqui sua URL do Google Apps Script
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSSZxHJSB6AMzff2lZI76p73o0mJLtFB2KSag8OcusUnaEkOAC-kGqiSsegZrA1I9smg/exec';
+// ═══════════════════════════════════════════════════
+
+const questions = [
+  {
+    text: "Quando você está ansioso, triste ou cansado, o que você faz com o dinheiro?",
+    options: [
+      { letter: "A", text: "Gasto para me sentir melhor (compro algo)" },
+      { letter: "B", text: "Tento economizar, mas é difícil controlar" },
+      { letter: "C", text: "Fico paralisado, não faço nada" },
+      { letter: "D", text: "Não reconheço esse padrão em mim" }
+    ]
+  },
+  {
+    text: "Você sabe exatamente para onde vai seu dinheiro no final do mês?",
+    options: [
+      { letter: "A", text: "Não faço ideia (desorganizado total)" },
+      { letter: "B", text: "Tenho uma ideia vaga" },
+      { letter: "C", text: "Sei, mas é desconfortável" },
+      { letter: "D", text: "Sim, tenho controle total" }
+    ]
+  },
+  {
+    text: "Como você se sente em relação às suas dívidas?",
+    options: [
+      { letter: "A", text: "Estou endividado e com medo (não sei como sair)" },
+      { letter: "B", text: "Tenho dívida, mas acho que consigo controlar" },
+      { letter: "C", text: "Tenho pouca dívida, mas gasto tudo que ganho" },
+      { letter: "D", text: "Não tenho dívidas significativas" }
+    ]
+  },
+  {
+    text: "Qual dessas frases mais se aproxima de você?",
+    options: [
+      { letter: "A", text: '"Dinheiro não é para mim" (bloqueio mental)' },
+      { letter: "B", text: '"Sempre algo acontece que estraga meu plano"' },
+      { letter: "C", text: '"Ganho bem, mas não consigo juntar"' },
+      { letter: "D", text: '"Tenho clareza e controle da minha vida financeira"' }
+    ]
+  },
+  {
+    text: "O que você mais quer em relação ao dinheiro?",
+    options: [
+      { letter: "A", text: "Sair das dívidas e ter paz mental" },
+      { letter: "B", text: "Ter dinheiro sobrando no final do mês" },
+      { letter: "C", text: "Entender meu padrão de gastos" },
+      { letter: "D", text: "Ter liberdade financeira e independência" }
+    ]
+  }
+];
+
+const profiles = {
+  A: {
+    badge: "Consumidor Emocional", bg: "#FAECE7", badgeColor: "#993C1D", dot: "#D85A30", textColor: "#4A1B0C",
+    title: "Você gasta para sentir",
+    desc: "Seu maior inimigo financeiro está nas emoções. Quando o estresse bate, o cartão aparece. Você sabe que isso acontece, mas na hora é difícil resistir. A boa notícia: esse padrão é 100% reversível quando você entende o gatilho.",
+    improvements: ["Compras impulsivas ligadas a estados emocionais","Falta de planejamento antes de gastar","Confundir prazer imediato com bem-estar real"],
+    steps: ["Identifique seus 3 principais gatilhos emocionais de compra","Crie uma regra de 48h antes de qualquer compra não planejada","Substitua compras por ações de baixo custo que também gerem prazer"]
+  },
+  B: {
+    badge: "Planejador Travado", bg: "#FAEEDA", badgeColor: "#854F0B", dot: "#BA7517", textColor: "#412402",
+    title: "Você quer, mas algo sempre atrapalha",
+    desc: "Você tem boas intenções e até começa a se organizar, mas sempre aparece algo que derruba o plano. O problema não é falta de vontade — é falta de estrutura para lidar com o imprevisível.",
+    improvements: ["Planos sem margem para imprevistos","Dívidas que consomem renda antes de sobrar","Ausência de reserva de emergência"],
+    steps: ["Monte um orçamento com 10% destinado a imprevistos","Priorize criar uma reserva de emergência de 1 mês de despesas","Automatize transferências para poupança no dia do salário"]
+  },
+  C: {
+    badge: "Ganho Bem, Mas…", bg: "#E1F5EE", badgeColor: "#0F6E56", dot: "#1D9E75", textColor: "#04342C",
+    title: "Sua renda é boa, mas escoa entre os dedos",
+    desc: "Você não tem desculpa de renda — o problema é que o dinheiro vai embora sem deixar rastro. O final do mês sempre chega antes do dinheiro. É o chamado 'inflação do estilo de vida'.",
+    improvements: ["Gastos crescem junto com a renda sem gerar patrimônio","Falta de metas financeiras claras e mensuráveis","Ausência de controle sobre pequenos gastos recorrentes"],
+    steps: ["Faça um rastreamento de gastos por 30 dias (tudo mesmo)","Defina uma meta de guardar % fixo do salário antes de gastar","Identifique assinaturas e gastos invisíveis que podem ser cortados"]
+  },
+  D: {
+    badge: "Consciente em Evolução", bg: "#E6F1FB", badgeColor: "#185FA5", dot: "#378ADD", textColor: "#042C53",
+    title: "Você tem clareza, agora é escalar",
+    desc: "Parabéns — você está à frente da maioria. Tem controle básico, não vive endividado e entende para onde vai seu dinheiro. Agora o desafio é ir além: construir patrimônio e alcançar liberdade financeira real.",
+    improvements: ["Otimizar a alocação de investimentos","Criar fontes de renda passiva","Definir metas financeiras de longo prazo"],
+    steps: ["Estabeleça uma meta de independência financeira com data","Diversifique investimentos além da poupança","Estude sobre renda variável e construção de patrimônio"]
+  },
+  E: {
+    badge: "Em Crise Financeira", bg: "#FCEBEB", badgeColor: "#A32D2D", dot: "#E24B4A", textColor: "#501313",
+    title: "Você está preso no ciclo das dívidas",
+    desc: "As dívidas parecem maiores que a renda e você não vê saída. É comum se sentir paralisado ou com vergonha de olhar para os números. Mas ignorar piora tudo. A saída existe — começa com encarar a situação de frente.",
+    improvements: ["Dívidas acima da capacidade de pagamento mensal","Paralisia e evitação ao lidar com finanças","Ausência de qualquer reserva ou plano de saída"],
+    steps: ["Liste todas as dívidas com valores e juros (conhecer é o primeiro passo)","Priorize pagar a dívida de maior juros primeiro","Negocie parcelamentos com credores — muitos aceitam"]
+  }
+};
+
+let current = 0, answers = [], selectedIndex = null, leadName = '', leadEmail = '';
+
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startQuiz() {
+  current = 0; answers = []; selectedIndex = null;
+  show('page-quiz'); renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const pct = Math.round((current+1)/5*100);
+  document.getElementById('q-num').textContent = String(current+1).padStart(2,'0') + ' / 05';
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('prog-label').textContent = 'Pergunta ' + (current+1) + ' de 5';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+  const btn = document.getElementById('btn-next');
+  btn.textContent = current === 4 ? 'Ver meu perfil →' : 'Próxima pergunta';
+  btn.classList.remove('active');
+  selectedIndex = null;
+  const opts = document.getElementById('q-options');
+  opts.innerHTML = '';
+  q.options.forEach((o, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = '<div class="opt-letter">' + o.letter + '</div><div class="opt-text">' + o.text + '</div>';
+    div.onclick = () => {
+      document.querySelectorAll('.option').forEach(x => x.classList.remove('selected'));
+      div.classList.add('selected');
+      selectedIndex = i;
+      document.getElementById('btn-next').classList.add('active');
+    };
+    opts.appendChild(div);
+  });
+}
+
+function nextQuestion() {
+  if (selectedIndex === null) return;
+  answers.push(selectedIndex);
+  if (current < 4) { current++; renderQuestion(); }
+  else { show('page-lead'); }
+}
+
+function getProfile() {
+  const counts = [0,0,0,0];
+  answers.forEach(a => counts[a]++);
+  if (answers[2] === 0 && answers[3] === 0) return 'E';
+  const max = Math.max(...counts);
+  return ['A','B','C','D'][counts.indexOf(max)];
+}
+
+async function submitLead() {
+  const name = document.getElementById('lead-name').value.trim();
+  const email = document.getElementById('lead-email').value.trim();
+  if (!name || !email || !email.includes('@')) {
+    alert('Por favor, preencha seu nome e um e-mail válido.');
+    return;
+  }
+  leadName = name; leadEmail = email;
+  const btn = document.getElementById('btn-lead');
+  const msg = document.getElementById('sending-msg');
+  btn.disabled = true; msg.style.display = 'block';
+  const profileKey = getProfile();
+  const answersText = answers.map((a, i) =>
+    'P' + (i+1) + ': ' + questions[i].options[a].letter + ') ' + questions[i].options[a].text
+  ).join(' | ');
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nome: name, email: email,
+        perfil: profiles[profileKey].badge,
+        respostas: answersText,
+        data: new Date().toLocaleString('pt-BR')
+      })
+    });
+  } catch(e) { /* no-cors, continua normalmente */ }
+  msg.style.display = 'none'; btn.disabled = false;
+  showResult();
+}
+
+function showResult() {
+  const key = getProfile();
+  const p = profiles[key];
+  document.getElementById('result-header').style.background = p.bg;
+  document.getElementById('result-header').style.color = p.textColor;
+  const badge = document.getElementById('result-badge');
+  badge.textContent = 'Perfil: ' + p.badge;
+  badge.style.background = 'rgba(255,255,255,0.6)';
+  badge.style.color = p.badgeColor;
+  document.getElementById('result-name').textContent = (leadName ? leadName + ', ' : '') + p.title.toLowerCase();
+  document.getElementById('result-desc').textContent = p.desc;
+  document.getElementById('result-improvements').innerHTML = p.improvements.map(t =>
+    '<div class="list-item"><div class="list-dot" style="background:' + p.dot + '"></div><span>' + t + '</span></div>'
+  ).join('');
+  document.getElementById('result-steps').innerHTML = p.steps.map((t,i) =>
+    '<div class="list-item"><div class="list-dot" style="background:' + p.dot + '"></div><span><strong>' + (i+1) + '.</strong> ' + t + '</span></div>'
+  ).join('');
+  window._profile = key; window._profileData = p;
+  show('page-result');
+}
+
+function restartQuiz() {
+  current = 0; answers = []; selectedIndex = null; leadName = ''; leadEmail = '';
+  show('page-hero');
+}
+
+function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const p = window._profileData;
+  const key = window._profile;
+  const colMap = { A:[217,90,48], B:[186,117,23], C:[29,158,117], D:[55,138,221], E:[226,75,74] };
+  const col = colMap[key] || [80,80,80];
+
+  doc.setFillColor(...col);
+  doc.rect(0, 0, 210, 42, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  doc.text('DIAGNÓSTICO FINANCEIRO PERSONALIZADO', 20, 13);
+  doc.setFontSize(22); doc.setFont('helvetica','bold');
+  doc.text('Descubra seu Padrão Financeiro', 20, 25);
+  doc.setFontSize(12); doc.setFont('helvetica','normal');
+  doc.text('Perfil: ' + p.badge, 20, 35);
+
+  doc.setTextColor(30,30,30);
+  let y = 55;
+
+  if (leadName) { doc.setFontSize(13); doc.setFont('helvetica','bold'); doc.text('Olá, ' + leadName + '!', 20, y); y += 8; }
+
+  doc.setFontSize(17); doc.setFont('helvetica','bold');
+  doc.text(p.title, 20, y); y += 8;
+
+  doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(80,80,80);
+  const descLines = doc.splitTextToSize(p.desc, 170);
+  doc.text(descLines, 20, y); y += descLines.length * 5 + 8;
+
+  doc.setDrawColor(...col); doc.setLineWidth(0.4);
+  doc.line(20, y, 190, y); y += 8;
+
+  doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(30,30,30);
+  doc.text('Suas respostas', 20, y); y += 7;
+
+  questions.forEach((q, i) => {
+    if (y > 260) { doc.addPage(); y = 20; }
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(60,60,60);
+    const qLines = doc.splitTextToSize((i+1) + '. ' + q.text, 170);
+    doc.text(qLines, 20, y); y += qLines.length * 4.5 + 1;
+    doc.setFont('helvetica','normal'); doc.setTextColor(...col);
+    const ans = q.options[answers[i]];
+    if (ans) { doc.text('✓ ' + ans.letter + ') ' + ans.text, 26, y); y += 6; }
+    y += 2;
+  });
+
+  if (y > 240) { doc.addPage(); y = 20; }
+  y += 2;
+  doc.setDrawColor(...col); doc.line(20, y, 190, y); y += 8;
+
+  doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(30,30,30);
+  doc.text('O que precisa melhorar', 20, y); y += 7;
+  p.improvements.forEach(item => {
+    doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(80,80,80);
+    doc.setFillColor(...col); doc.circle(23.5, y-1.5, 1.3, 'F');
+    const lines = doc.splitTextToSize(item, 160);
+    doc.text(lines, 28, y); y += lines.length * 4.5 + 3;
+  });
+
+  y += 4;
+  if (y > 240) { doc.addPage(); y = 20; }
+  doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(30,30,30);
+  doc.text('Seus próximos passos', 20, y); y += 7;
+  p.steps.forEach((step, i) => {
+    doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(...col);
+    doc.text(String(i+1) + '.', 20, y);
+    doc.setFont('helvetica','normal'); doc.setTextColor(80,80,80);
+    const lines = doc.splitTextToSize(step, 160);
+    doc.text(lines, 28, y); y += lines.length * 4.5 + 3;
+  });
+
+  doc.setFontSize(8); doc.setTextColor(180,180,180);
+  doc.text('Gerado em ' + new Date().toLocaleDateString('pt-BR') + (leadEmail ? ' para ' + leadEmail : ''), 20, 287);
+  doc.save('diagnostico-financeiro.pdf');
+}
+</script>
+</body>
+</html>
