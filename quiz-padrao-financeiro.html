@@ -197,7 +197,7 @@
   <div class="lead-wrap">
     <div class="lead-icon">🎯</div>
     <div class="lead-title">Quase lá!</div>
-    <p class="lead-sub">Seu diagnóstico está pronto. Informe seus dados para revelar seu perfil financeiro e receber o PDF gratuito.</p>
+    <p class="lead-sub">Seu diagnóstico está pronto! Informe seus dados para revelar seu perfil e eu posso te mandar um conteúdo personalizado. 💛</p>
     <div class="input-group">
       <label>Seu nome</label>
       <input type="text" id="lead-name" placeholder="Como posso te chamar?" />
@@ -205,6 +205,10 @@
     <div class="input-group">
       <label>Seu melhor e-mail</label>
       <input type="email" id="lead-email" placeholder="seu@email.com" />
+    </div>
+    <div class="field-group">
+      <label>Seu WhatsApp</label>
+      <input type="tel" id="lead-whats" placeholder="(11) 99999-9999" />
     </div>
     <button class="btn-lead" id="btn-lead" onclick="submitLead()">Ver meu resultado →</button>
     <div class="sending-msg" id="sending-msg">Salvando seus dados...</div>
@@ -328,7 +332,7 @@ const profiles = {
   }
 };
 
-let current = 0, answers = [], selectedIndex = null, leadName = '', leadEmail = '';
+let current = 0, answers = [], selectedIndex = null, leadName = '', leadEmail = '', leadWhats = '';
 
 function show(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -387,11 +391,12 @@ function getProfile() {
 async function submitLead() {
   const name = document.getElementById('lead-name').value.trim();
   const email = document.getElementById('lead-email').value.trim();
+  const whats = document.getElementById('lead-whats').value.trim();
   if (!name || !email || !email.includes('@')) {
     alert('Por favor, preencha seu nome e um e-mail válido.');
     return;
   }
-  leadName = name; leadEmail = email;
+  leadName = name; leadEmail = email; leadWhats = whats;
   const btn = document.getElementById('btn-lead');
   const msg = document.getElementById('sending-msg');
   btn.disabled = true; msg.style.display = 'block';
@@ -404,7 +409,7 @@ async function submitLead() {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        nome: name, email: email,
+        nome: name, email: email, whatsapp: whats,
         perfil: profiles[profileKey].badge,
         respostas: answersText,
         data: new Date().toLocaleString('pt-BR')
@@ -437,7 +442,7 @@ function showResult() {
 }
 
 function restartQuiz() {
-  current = 0; answers = []; selectedIndex = null; leadName = ''; leadEmail = '';
+  current = 0; answers = []; selectedIndex = null; leadName = ''; leadEmail = ''; leadWhats = '';
   show('page-hero');
 }
 
@@ -514,7 +519,7 @@ function generatePDF() {
   });
 
   doc.setFontSize(8); doc.setTextColor(180,180,180);
-  doc.text('Gerado em ' + new Date().toLocaleDateString('pt-BR') + (leadEmail ? ' para ' + leadEmail : ''), 20, 287);
+  doc.text('Gerado em ' + new Date().toLocaleDateString('pt-BR') + (leadEmail ? ' | ' + leadEmail : '') + (leadWhats ? ' | WhatsApp: ' + leadWhats : ''), 20, 287);
   doc.save('diagnostico-financeiro.pdf');
 }
 </script>
